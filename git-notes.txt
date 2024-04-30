@@ -1,0 +1,242 @@
+Learnings : Git, GitHub and OpenSource learnings
+
+VSCode extensions for Git : gitLens, gitGraph, gitHistory, gitExtensionPack, gitProjectManager, gitignore
+Student benefits : gitkraken (github student developer pack)
+
+The following are my git-notes, feel free to use AI assistance for detailed learning : 
+
+.git -> (sensitive hidden folder) (hooks, info, logs, objects)
+.gitignore -> contains info about the files to be ignored by git from tracking
+write -> add -> commit
+master(older) -> main(modern)
+
+// SSH key setup
+Password based push is not allowed (discouraged due to security reasons)
+SSH key is used for authentication before push
+legacy systems use RSA, modern systems use SHA-2 algorithm
+
+Use the GitHub official docs for clean setup. Here's the process for macOS i have followed :
+ssh -T git@github.com // checking if ssh key connection is successful
+eval "$(ssh-agent -s)"
+ls -al ~/.ssh
+open ~/.ssh
+ssh-keygen -t ed25519 -C "Your@Email.Address"
+eval "$(ssh-agent -s)"
+open ~/.ssh/config
+ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+pbcopy < ~/.ssh/id_ed25519.pub
+git credential-osxkeychain erase
+
+git rev-parse --is-inside-work-tree // check if we are currently in a git working true
+git init // initialise a git repo
+
+// git configuration
+git config --global --list
+git config --global user.name "username"
+git config --global email "username@mailServer.domain"
+git config --global core.editor "code --wait" 
+
+// logging
+git reflog
+git log or git log --oneline
+git log --all --graph
+git status
+
+// staging
+git add .
+git add filename.extension
+
+// committing
+git commit // opens interactive code editor (default is vim)
+git commit -m 'commit message' // commit message should be in present tense & imperative
+
+git commit -am 'commit message' // adding and committing
+
+// pushing
+git push origin branchName // origin is an alias for remote repo
+
+// branching
+git branch // lists all branches (*current branch)
+git branch -v // local branches with their latest commit details (verbose)
+git branch -vv // relationship with their upstream tracking branches (very verbose)
+
+(switch is same as checkout , switch === checkout)
+git switch branchName // move to a branch
+git switch -b newBranchName // create and switch
+git checkout branchName // move to a branch
+git checkout -b newBranchName // create and switch
+git checkout commitHash // moving to a particular commit in time(past)
+git branch -d branchName // delete a branch
+git branch -D branchName // force delete a branch
+
+// difference
+git diff // +++++ , ----- for the same file
+git diff commitHash1 commitHash2
+git diff --staged // informative command which is used for comparing changes during staging
+
+// stashing 
+git stash // used for smooth transition to other branches without work loss
+git stash pop // bring back changes
+git stash apply stash@{number} // bring back particular changes and apply them
+
+// Rebase (alternative to merging, used for keeping a clean commit history)
+git rebase master // not meant to be run on main/master branch
+
+// Remote repo branches
+git remote -v // list of configured remotes of that directory
+git remote add name url (name can be origin or upstream)
+git remote add origin https://github.com/username/repository-name.git // HTTPS web url
+git remote add origin git@github.com:username/repository-name.git // SSH web url
+git remote set-url origin https://github.com/username/repository-name.git // change remote origin (HTTPS)
+git remote set-url origin git@github.com:username/repository-name.git // SSH
+git remote rename oldName newName
+git remote remove name
+git branch -r // links local branch to remote
+git branch --set-upstream-to=origin/remoteBranchName localBranchName // -u or --set-upstream-to
+
+// pushing and pulling
+git push origin main
+git push --set-upstream origin main
+git push -u origin branchName
+git fetch origin branchName
+git fetch --all // retrieve changes from all remote repos
+git pull origin/branchName // pulling specific branch
+git reset --hard origin/branchName // resets the current branch to match the specified remote branch
+git pull -f // -f or --force, updates local branch by overwriting changes from remote branch
+
+git pull = git fetch + git merge
+
+// Merge workflow for performing clean merge
+checkout -> fetch -> pull -> merge -> commit -> push
+// merge base
+git checkout targetBranch
+git fetch origin targetBranch
+git pull origin targetBranch
+git merge feature-branch
+git commit -m "Merge feature-branch into targetBranch"
+git push origin targetBranch
+
+Caveats: Be careful while using rebase, force and hard. Do not simply copy and paste commands given by AI, instead understand the functioning of these commands before usage. Improper usage might lead you to undesired situations.
+
+Safety Tips:
+1. Use reflogs for viewing the changes
+2. Better to comment a commit rather than deleting it(drop) during rebase
+
+My Insights:
+1. Follow naming conventions for branch names, commit messages
+2. Have a clean commit history
+3. Follow branching strategies for easy project management
+4. Use two branches (main for deployment or production and stable releases , develop for development and hotfixes)
+5. Separate branches for bugs, features, chores
+6. Using AI assistance(chatGPT) for following best practices
+7. Understand the command clearly before execution
+8. Follow one commit for one change (can reduce the time for merging your pr)
+
+Following best practices is time taking but this makes it easy for maintainers to monitor the changes and new contributors for understanding the codebase in a better way.
+
+As a fellow contributor i would like to urge to all the open source contributors to follow best practices, choose quality over quantity in their contributions and give time for maintainers to review and merge prs and respect their busy schedule.
+
+I would like to thank🙌 open source repo maintainers for being kind, patient and friendly with new contributors and being the backbone of open source culture.
+
+//complete workflow (kind of formal)
+git config
+git init
+git branch
+git checkout or git switch
+(make changes)
+git add .
+git commit -m "Your commit message"
+git merge feature or git rebase feature
+git branch -d feature
+git pull origin main or develop
+[Branching Strategy]
+git tag -a v1.0 -m "Version 1.0"
+[Conflict Resolution]
+[git diff // Reviewing Changes]
+[git stash]
+[git reset --hard HEAD // Discard changes in the working directory or staging area]
+[git clean -fd]
+git remote
+git status
+git fetch
+git push
+[git submodule update --init --recursive]
+
+// Branch naming conventions 
+feat/feature-name: For new feature development.
+bugfix/issue-description: For bug fixes.
+chore/task-description: For miscellaneous tasks such as refactoring or maintenance.
+release/version-number: For preparing a release version.
+hotfix/issue-description: For fixing critical bugs in production.
+dev, staging, production: For different environment branches.
+
+//known (incomplete)
+git config
+git init
+git branch
+git checkout
+git add 
+git commit -m "Your commit message"
+git remote
+git status
+git fetch
+git pull
+git push
+
+// tried
+git config --list
+git config --global --list
+git config --local --list
+
+git rev-parse --is-inside-work-tree // check if we are currently in a git working true
+git init // git repo initialization
+git remote -v // list of configured remotes of that directory
+git remote add origin <repository-url>
+(git remote add origin https://github.com/lokeshwar777/talawa-api.git)
+git remote add upstream https://github.com/PalisadoesFoundation/talawa-api.git
+git remote set-url origin https://github.com/lokeshwar777/talawa-api.git // change remote origin (HTTPS)
+git remote set-url origin git@github.com:your-username/your-repository.git // SSH
+
+git branch // lists all branches (*current branch)
+git branche -vv
+git branch newBranchName // create new branch
+git checkout newBranchName // switch to newBranchName
+git checkout -b newBranchName // create and switch
+
+git fetch origin develop
+git reset --hard origin/develop
+git fetch --all && git reset --hard origin/devlop
+-u or --set-upstream-to
+git branch --set-upstream-to=origin/develop development
+git pull origin/develop
+git pull -f or --force
+
+git status
+git add .
+git commit -m "commit"
+git push origin bugfix
+
+git diff package-lock.json
+
+
+// SSH key setup
+
+//ChatGPT
+cat ~/.ssh/config
+ssh-keygen -t rsa -b 4096 -C "lokeshwar777@gmail.com" -f ~/.ssh/id_rsa_lokeshwar777
+cd .ssh
+touch config
+ssh-add ~/.ssh/id_rsa
+open config
+
+ssh -T git@github.com // checking if ssh key connection is successful
+
+eval "$(ssh-agent -s)"
+ls -al ~/.ssh
+open ~/.ssh
+ssh-keygen -t ed25519 -C "lokeshwar777@gmail.com"
+eval "$(ssh-agent -s)"
+open ~/.ssh/config
+ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+pbcopy < ~/.ssh/id_ed25519.pub
+git credential-osxkeychain erase
